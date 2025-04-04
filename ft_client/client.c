@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-static int	not_recv;
-
 pid_t	ft_atoi(char *str)
 {
 	pid_t	pid;
@@ -20,7 +18,7 @@ pid_t	ft_atoi(char *str)
 	return (pid);
 }
 
-void	ft_atob(char c, int *byte)
+void	ft_atob(unsigned char c, int *byte)
 {
 	int	i;
 
@@ -33,23 +31,29 @@ void	ft_atob(char c, int *byte)
 	}
 }
 
-void	ft_sig_handler()
+void	ft_sig_handler(int signal)
 {
-	//printf("\nGot signal from serer %d\n", signal);
-	not_recv = 0;
+	if (signal == SIGUSR2)
+		write(1, "OK\n", 0);
 }
 
-void	ft_putstr(char *str)
+void	ft_send_end(pid_t pid)
 {
-	while (*str)
-		write(1, str++, 1);
+	int	i;
+
+	i = 0;
+	while (i < 8)
+	{
+		kill(pid, SIGUSR1);
+		usleep(2500);
+		i++;
+	}
 }
 
 void	ft_send(pid_t pid, char *msg)
 {
 	int	byte[8];
 	int	i;
-	char	c;
 	
 	while (*msg)
 	{
@@ -61,14 +65,13 @@ void	ft_send(pid_t pid, char *msg)
 				kill(pid, SIGUSR2);
 			else
 				kill(pid, SIGUSR1);
-			c = byte[i] + 48;
-			write(1, &c, 1);
-			not_recv = 1;
-			usleep(2000);
+			usleep(3500);
 			i++;
 		}
+		write(1, "Ok!\n", 4);
 		msg++;
 	}
+	ft_send_end(pid);
 }
 
 

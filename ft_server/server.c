@@ -32,6 +32,11 @@ void	ft_sig_handler(int signal, siginfo_t *info, void *context)
 	(void)context;
 	client_pid = info->si_pid;	
 	count++;
+	
+	//if (signal == SIGUSR2)
+	//	write(1, "1", 1);
+	//else
+	//	write(1, "0", 1);
 	if (signal == SIGUSR1)
 		byte = (byte << 1);
 	else
@@ -39,8 +44,12 @@ void	ft_sig_handler(int signal, siginfo_t *info, void *context)
 	//printf("\n=%d %d\n", byte, count);
 	if (count == 8)
 	{
-		write(1, &byte, 1);
+		if (byte == 0)
+			write(STDOUT_FILENO, "\n", 1);
+		else
+			write(STDOUT_FILENO, &byte, 1);
 		count = 0;
+		//write(1, " ", 1);
 	}
 	if (client_pid == 0)
 		printf("sdf");
