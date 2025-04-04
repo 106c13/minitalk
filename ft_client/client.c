@@ -1,5 +1,4 @@
 #include <signal.h>
-#include <stdio.h>
 #include <unistd.h>
 
 pid_t	ft_atoi(char *str)
@@ -7,7 +6,7 @@ pid_t	ft_atoi(char *str)
 	pid_t	pid;
 
 	pid = 0;
-	while(*str)
+	while (*str)
 	{
 		if (*str >= '0' && *str <= '9')
 			pid = pid * 10 + (*str - 48);
@@ -54,7 +53,7 @@ void	ft_send(pid_t pid, char *msg)
 {
 	int	byte[8];
 	int	i;
-	
+
 	while (*msg)
 	{
 		i = 0;
@@ -74,10 +73,9 @@ void	ft_send(pid_t pid, char *msg)
 	ft_send_end(pid);
 }
 
-
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	pid_t	pid;
+	pid_t				pid;
 	struct sigaction	sa;
 
 	sigemptyset(&sa.sa_mask);
@@ -90,5 +88,5 @@ int main(int argc, char **argv)
 		if (pid != -1)
 			ft_send(pid, argv[2]);
 	}
-	return 0;
+	return (0);
 }
