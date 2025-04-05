@@ -1,8 +1,8 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRC_SERVER = ft_server/server.c
-SRC_CLIENT = ft_client/client.c
+SRC_SERVER = Server/server.c
+SRC_CLIENT = Client/client.c
 
 OBJ_SERVER = $(SRC_SERVER:.c=.o)
 OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
