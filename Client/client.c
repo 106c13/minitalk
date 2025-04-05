@@ -34,30 +34,43 @@ pid_t	ft_atoi(char *str)
 void	ft_sig_handler(int signal)
 {
 	if (signal == SIGUSR1)
-		write(1, "Message sent ", 13);
+		write(1, "Message sent!\n", 14);
 }
 
-void	ft_send(pid_t pid, char *msg)
+int	ft_send_byte(char c, pid_t pid)
 {
-	int				i;
-	unsigned char	c;
+	int	i;
 
+	i = 7;
+	while (i >= 0)
+	{
+		if ((c >> i) & 1)
+		{
+			if (kill(pid, SIGUSR2) == -1)
+				return (0);
+		}
+		else
+		{
+			if (kill(pid, SIGUSR1) == -1)
+				return (0);
+		}
+		usleep(2800);
+		i--;
+	}
+	return (1);
+}
+
+void	ft_minitalk(pid_t pid, char *msg)
+{
 	if (!(*msg))
 		return ;
 	while (1)
 	{
-		i = 7;
-		c = *msg;
-		while (i >= 0)
+		if (!ft_send_byte(*msg, pid))
 		{
-			if ((c >> i) & 1)
-				kill(pid, SIGUSR2);
-			else
-				kill(pid, SIGUSR1);
-			usleep(2800);
-			i--;
+			write(1, "Error!\n", 7);
+			return ;
 		}
-		write(1, "Ok!\n", 4);
 		if (!(*msg))
 			return ;
 		msg++;
@@ -78,7 +91,11 @@ int	main(int argc, char **argv)
 	{
 		pid = ft_atoi(argv[1]);
 		if (pid != -1)
-			ft_send(pid, argv[2]);
+			ft_minitalk(pid, argv[2]);
+		else
+			write(1, "./client <pid> \"<message\">\n", 27);
 	}
+	else
+		write(1, "./client <pid> \"<message>\"\n", 27);
 	return (0);
 }

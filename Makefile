@@ -7,10 +7,17 @@ SRC_CLIENT = Client/client.c
 OBJ_SERVER = $(SRC_SERVER:.c=.o)
 OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
 
+
+NAME = minitalk
 NAME_SERVER = server
 NAME_CLIENT = client
 
-all: $(NAME_SERVER) $(NAME_CLIENT)
+all: $(NAME)
+
+bonus: $(NAME)
+
+$(NAME): $(NAME_SERVER) $(NAME_CLIENT)
+
 
 
 $(NAME_SERVER): $(OBJ_SERVER)
