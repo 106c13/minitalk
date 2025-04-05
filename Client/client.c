@@ -40,20 +40,17 @@ void	ft_sig_handler(int signal)
 int	ft_send_byte(char c, pid_t pid)
 {
 	int	i;
+	int	sig;
 
 	i = 7;
 	while (i >= 0)
 	{
 		if ((c >> i) & 1)
-		{
-			if (kill(pid, SIGUSR2) == -1)
-				return (0);
-		}
+			sig = SIGUSR2;
 		else
-		{
-			if (kill(pid, SIGUSR1) == -1)
-				return (0);
-		}
+			sig = SIGUSR1;
+		if (kill(pid, sig) == -1)
+			return (0);
 		usleep(2800);
 		i--;
 	}
