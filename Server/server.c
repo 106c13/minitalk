@@ -14,13 +14,31 @@ void	ft_putnbr(int num)
 	write(1, &c, 1);
 }
 
+int	ft_write_byte(pid_t pid, char *byte)
+{
+	if (byte == 0)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		kill(pid, SIGUSR1);
+	}
+	else
+		write(STDOUT_FILENO, byte, 1);
+	return (0);
+}
+
 void	ft_sig_handler(int signal, siginfo_t *info, void *context)
 {
-	static char	byte;
-	static int	count;
-	pid_t		client_pid;
+	static char		byte;
+	static int		count;
+	static pid_t	client_pid;
 
 	(void)context;
+	if (info->si_pid != client_pid)
+	{
+		count = 0;
+		byte = 0;
+		write(1, "\n", 1);
+	}
 	client_pid = info->si_pid;
 	count++;
 	if (signal == SIGUSR1)
@@ -28,17 +46,7 @@ void	ft_sig_handler(int signal, siginfo_t *info, void *context)
 	else
 		byte = (byte << 1) | 1;
 	if (count == 8)
-	{
-		count = 0;
-		if (byte == 0)
-		{
-			write(STDOUT_FILENO, "\n", 1);
-			kill(client_pid, SIGUSR1);
-			return ;
-		}
-		else
-			write(STDOUT_FILENO, &byte, 1);
-	}
+		count = ft_write_byte(client_pid, &byte);
 	kill(client_pid, SIGUSR2);
 }
 
