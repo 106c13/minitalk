@@ -36,7 +36,7 @@ int	ft_send_byte(char c, pid_t pid)
 	i = 7;
 	while (i >= 0)
 	{
-		is_recv = 0;
+		g_is_recv = 0;
 		while (!g_is_recv)
 		{
 			if ((c >> i) & 1)
