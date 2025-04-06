@@ -43,7 +43,7 @@ int	ft_send_byte(char c, pid_t pid)
 				sig = SIGUSR2;
 			else
 				sig = SIGUSR1;
-			if (kill(pid, sig) == -1)
+			if (!g_is_recv && kill(pid, sig) == -1)
 				return (0);
 			usleep(2800);
 		}
