@@ -1,6 +1,8 @@
 #include <signal.h>
 #include <unistd.h>
 
+int	g_is_recv;
+
 pid_t	ft_atoi(char *str)
 {
 	pid_t	pid;
@@ -23,6 +25,7 @@ void	ft_sig_handler(int signal)
 {
 	if (signal == SIGUSR1)
 		write(1, "Message sent!\n", 14);
+	g_is_recv = 1;
 }
 
 int	ft_send_byte(char c, pid_t pid)
@@ -33,13 +36,17 @@ int	ft_send_byte(char c, pid_t pid)
 	i = 7;
 	while (i >= 0)
 	{
-		if ((c >> i) & 1)
-			sig = SIGUSR2;
-		else
-			sig = SIGUSR1;
-		if (kill(pid, sig) == -1)
-			return (0);
-		usleep(2800);
+		is_recv = 0;
+		while (!g_is_recv)
+		{
+			if ((c >> i) & 1)
+				sig = SIGUSR2;
+			else
+				sig = SIGUSR1;
+			if (kill(pid, sig) == -1)
+				return (0);
+			usleep(2800);
+		}
 		i--;
 	}
 	return (1);
